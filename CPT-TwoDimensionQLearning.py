@@ -764,8 +764,8 @@ if __name__ == '__main__':
 	args.CPT=1
 	run()
 	for sigma in [1 , 5]:
-		args.sigma=sigma
-		args.DF=1
+		SIGMA=sigma
+		Diff_Priv=1
 		run()
 	plot_average_var()
 
