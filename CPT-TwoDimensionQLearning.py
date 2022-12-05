@@ -53,6 +53,7 @@ class hitorstandcontinuous:
 		self.obs=[]
 		
 		
+		
 
 	def add_obsticles(self,position, penality):
 		if position[0]>self.num_states or position[0]>self.num_states:
@@ -418,7 +419,7 @@ class DQN(nn.Module):
 		else:
 			return x.type(torch.DoubleTensor)
 
-def state_number(st):
+def state_number(st ):
 	i=np.floor(st[0])
 	j=np.floor(st[1])
 	temp=int(i*env.num_states+j)
@@ -596,64 +597,8 @@ def plot_average_var():
 
 
 
-def main(args):
-	Transition = namedtuple('Transition',('state', 'action', 'next_state', 'reward'))
-	BATCH_SIZE = 128
-	GAMMA = 0.7
-	#ES_** :Selecting the Action Parameters 
-	#(weight decay for selecting optimized action ro randomly choosing an action)
-	EPS_START = 0.9
-	EPS_END = 0.05
-	EPS_DECAY = 200
-	TARGET_UPDATE = 1
-	num_episodes = 400
-
-	#DIFFERENTIAL PRIVACY MAIN PARAMETE : larger sigma ==> higher privacy level
-
-	SIGMA= args.sigma
-
-	#Trurn on/ Off DIFFERENTIAL PRIVACY  
-	Diff_Priv= False if args.DF==0 else True
-
-	#Trurn on/ Off Penalty for hitting obsticles
-	CPT_mod=False if args.CPT==0 else True
+def mainfunc(args):
 	
-	env = hitorstandcontinuous()
-	m = env.action_space.n
-	
-	# Adding obsticles, we considered 4 obsticles with different costs of hitting
-	#For example [9,8] with cost of 50
-	if CPT_mod:
-		env.add_obsticles([9,8], 50)
-		env.add_obsticles([3,5], 5)
-		env.add_obsticles([4,8], 25)
-		env.add_obsticles([5,5], 10)
-	else:
-		env.add_obsticles([9,8], 1)
-		env.add_obsticles([3,5], 1)
-		env.add_obsticles([4,8], 1)
-		env.add_obsticles([5,5], 1)
-
-	seed = 3
-	np.random.seed(seed)
-	torch.manual_seed(seed)
-
-	device = "cpu"
-	policy_net = DQN(m,[env.num_states,env.num_states],DP=Diff_Priv,sigma=SIGMA).to(device)
-	
-
-	optimizer = optim.RMSprop(policy_net.parameters())
-	memory = ReplayMemory(10000)
-
-
-	steps_done = 0
-
-	sigma_cpt = 0.88
-	
-	eta_1 = 0.61
-	eta_2 = 0.69
-	gamma_cpt = 0.9
-	N_max=100
 	
 	
 	all_episodic_rewards=[]
@@ -757,16 +702,75 @@ if __name__ == '__main__':
 	args = parser.parse_args()
 	print(args)
 
-	main(args)
 
-	# args.DF= 0
-	# args.CPT=1
-	# main(args)
-	# for sigma in [1 , 5]:
-	# 	args.sigma=sigma
-	# 	args.DF=1
-	# 	main(args)
-	# plot_average_var()
+	Transition = namedtuple('Transition',('state', 'action', 'next_state', 'reward'))
+	BATCH_SIZE = 128
+	GAMMA = 0.7
+	#ES_** :Selecting the Action Parameters 
+	#(weight decay for selecting optimized action ro randomly choosing an action)
+	EPS_START = 0.9
+	EPS_END = 0.05
+	EPS_DECAY = 200
+	TARGET_UPDATE = 1
+	num_episodes = 400
+
+	#DIFFERENTIAL PRIVACY MAIN PARAMETE : larger sigma ==> higher privacy level
+
+	SIGMA= args.sigma
+
+	#Trurn on/ Off DIFFERENTIAL PRIVACY  
+	Diff_Priv= False if args.DF==0 else True
+
+	#Trurn on/ Off Penalty for hitting obsticles
+	CPT_mod=False if args.CPT==0 else True
+	
+	env = hitorstandcontinuous()
+	m = env.action_space.n
+	
+	# Adding obsticles, we considered 4 obsticles with different costs of hitting
+	#For example [9,8] with cost of 50
+	if CPT_mod:
+		env.add_obsticles([9,8], 50)
+		env.add_obsticles([3,5], 5)
+		env.add_obsticles([4,8], 25)
+		env.add_obsticles([5,5], 10)
+	else:
+		env.add_obsticles([9,8], 1)
+		env.add_obsticles([3,5], 1)
+		env.add_obsticles([4,8], 1)
+		env.add_obsticles([5,5], 1)
+
+	seed = 3
+	np.random.seed(seed)
+	torch.manual_seed(seed)
+
+	device = "cpu"
+	policy_net = DQN(m,[env.num_states,env.num_states],DP=Diff_Priv,sigma=SIGMA).to(device)
+	
+
+	optimizer = optim.RMSprop(policy_net.parameters())
+	memory = ReplayMemory(10000)
+
+
+	steps_done = 0
+
+	sigma_cpt = 0.88
+	
+	eta_1 = 0.61
+	eta_2 = 0.69
+	gamma_cpt = 0.9
+	N_max=100
+
+	run(args)
+
+	args.DF= 0
+	args.CPT=1
+	run(args)
+	for sigma in [1 , 5]:
+		args.sigma=sigma
+		args.DF=1
+		run(args)
+	plot_average_var()
 
 
 
