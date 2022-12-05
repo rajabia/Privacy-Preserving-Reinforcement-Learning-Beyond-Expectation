@@ -605,7 +605,7 @@ def run():
 	average_collision_per_obsticles=[]
 	average_collision_per_obsticles_ac=[]
 
-	while len(all_episodic_rewards) <20:
+	while len(all_episodic_rewards) <5:
 		policy_net = DQN(m,[env.num_states,env.num_states],DP=Diff_Priv,sigma=SIGMA).to(device)
 		optimizer = optim.RMSprop(policy_net.parameters())
 		memory = ReplayMemory(10000)
@@ -673,8 +673,8 @@ def run():
 	else:
 		savefileadd= 'No_DP_result'
 
-	if CPT_mod:
-		np.save('20Runs_'+savefileadd+'.npy', all_episodic_rewards)
+	
+	np.save('20Runs_'+savefileadd+'.npy', all_episodic_rewards)
 	print('*'*15 +"  Average for 20 runs   "+'*'*15 )
 	print('General Simulation')
 	print("Average Cost : %.4f "%(np.mean(cost)))
@@ -683,6 +683,8 @@ def run():
 	print('Actor_Critic Simulation')
 	print("Average Cost:  %.4f"%(np.mean(cost_ac)))
 	print("Average obstacles hit for 20 runs is for each obstacles is  ", (np.mean(np.array(average_collision_per_obsticles_ac),axis=0)))
+
+	print('saving the results in: '+ '20Runs_'+savefileadd+'.npy')
 
 
 if __name__ == '__main__':
@@ -761,7 +763,7 @@ if __name__ == '__main__':
 	run()
 
 	args.DF= 0
-	args.CPT=1
+	CPT_mod=1
 	run()
 	for sigma in [1 , 5]:
 		SIGMA=sigma
