@@ -597,9 +597,7 @@ def plot_average_var():
 
 
 
-def mainfunc(args):
-	
-	
+def run():
 	
 	all_episodic_rewards=[]
 	cost, cost_ac=[],[]
@@ -637,9 +635,8 @@ def mainfunc(args):
 			# Update the target network, copying all weights and biases in DQN
 			l=optimize_model()
 			episodic_rewards.append(l)
-		loss_conv=np.mean(episodic_rewards[-5:])
 		all_episodic_rewards.append(episodic_rewards)
-		print("Loss vlue of the last five iterations : %.4f"%(loss_conv))
+		
 
 
 		a,b,a1,b1=0,0,0,0
@@ -761,15 +758,15 @@ if __name__ == '__main__':
 	gamma_cpt = 0.9
 	N_max=100
 
-	run(args)
+	run()
 
 	args.DF= 0
 	args.CPT=1
-	run(args)
+	run()
 	for sigma in [1 , 5]:
 		args.sigma=sigma
 		args.DF=1
-		run(args)
+		run()
 	plot_average_var()
 
 
