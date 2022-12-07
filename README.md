@@ -37,8 +37,7 @@ To cite this paper:
 <table>
   <tr>
     <td><img src="./Env2.png" width="200"></td>
-    The 10 × 10 square region on which the PP-CPT- RL algorithm is evaluated. The agent needs to learn a policy to reach target T from start S. There are obstacles in the environment (red squares), and the agent incurs a different cost when encountering each obstacle.
-     <td>Present day in purple and selected day in pink</td>
+    <td>The 10 × 10 square region on which the PP-CPT- RL algorithm is evaluated. The agent needs to learn a policy to reach target T from start S. There are obstacles in the environment (red squares), and the agent incurs a different cost when encountering each obstacle<\td>
   </tr>
  </table>
 
