@@ -1,7 +1,9 @@
 # Privacy-Preserving-Reinforcement-Learning-Beyond-Expectation
 Privacy-Preserving Reinforcement Learning Beyond Expectation:
 
-In this paper, we incorporated cumulative prospect theory (CPT) into the objective of a reinforcement learning (RL) problem to quantify risk and used differential privacy to keep decision making hidden from external parties.
+This code extends the [Privacy-preserving Q-Learning with Functional Noise in Continuous Spaces](https://github.com/wangbx66/differentially-private-q-learning) to add cumulative prospect theory (CPT) in discrete space enviroment.
+
+In [Privacy-Preserving Reinforcement Learning Beyond Expectation](https://arxiv.org/pdf/2203.10165), we incorporated cumulative prospect theory (CPT) into the objective of a reinforcement learning (RL) problem to quantify risk and used differential privacy to keep decision making hidden from external parties.
 
 <table>
   <tr>
