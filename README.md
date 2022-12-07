@@ -36,10 +36,20 @@ To cite this paper:
 
 <table>
   <tr>
-    <td><img src="./Env2.png" width="200"></td>
-    <td>The 10 × 10 square region on which the PP-CPT- RL algorithm is evaluated. The agent needs to learn a policy to reach target T from start S. There are obstacles in the environment (red squares), and the agent incurs a different cost when encountering each obstacle<\td>
+    <td><img src="./Env2.png" width="400"></td>
+    <td>The 10 × 10 square region on which the PP-CPT- RL algorithm is evaluated. The agent needs to learn a policy to reach target T from start S. There are obstacles in the environment (red squares), and the agent incurs a different cost when encountering each obstacle</td>
   </tr>
  </table>
+ 
+ <table>
+  <tr>
+    <td><img src="./LossConvergence.png" width="400"></td>
+    <td>T Loss values averaged over 20 runs. Shaded regions indicate variance of the loss. When $\sigma = 1$ (red curve, denoted DP − 1), the average loss and its variance is comparable to the setting without differential privacy (blue curve, denoted NoDP). Choosing $\sigma = 5$  (green curve, denoted DP − 5) provides improved guarantees on privacy according to Theorem 1, but results in a higher loss, thus demonstrating a privacy-utility tradeoff.
+ </td>
+  </tr>
+ </table>
+ 
+ 
 
 
 
