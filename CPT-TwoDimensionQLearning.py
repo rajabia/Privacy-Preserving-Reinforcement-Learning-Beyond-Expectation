@@ -548,9 +548,9 @@ def optimize_model():
 
 def plot_average_var():
 	from matplotlib import pyplot as pl
-	X1=np.load('20Runs_DP_result1.npy', allow_pickle=True)
+	X1=np.load('20Runs_DP_result1.00.npy', allow_pickle=True)
 	X2=np.load('20Runs_No_DP_result.npy',  allow_pickle=True)
-	X3=np.load('20Runs_DP_result5.npy',  allow_pickle=True)
+	X3=np.load('20Runs_DP_result5.00.npy',  allow_pickle=True)
 	
 	t=np.arange(1,np.array(X2).shape[1]+1,1)
 	print(X1,X2,X3)
@@ -729,7 +729,7 @@ if __name__ == '__main__':
 
 	
 	if Diff_Priv:
-		savefileadd= 'DP_result'+ str(SIGMA)
+		savefileadd= 'DP_result%.2f'%SIGMA
 	else:
 		savefileadd= 'No_DP_result'
 	if CPT_mod:
