@@ -33,3 +33,7 @@ To cite this paper:
   year={2022}
 }
 ```
+
+
+![plot](./figs/Env2.png)
+![plot](./figs/LossConvergence.png)
