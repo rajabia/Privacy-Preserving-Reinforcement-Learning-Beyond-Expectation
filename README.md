@@ -35,5 +35,5 @@ To cite this paper:
 ```
 
 
-![plot](./figs/Env2.png)
-![plot](./figs/LossConvergence.png)
+![plot](./Env2.png)
+![plot](./LossConvergence.png)
