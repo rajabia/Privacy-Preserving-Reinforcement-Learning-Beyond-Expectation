@@ -34,6 +34,6 @@ To cite this paper:
 }
 ```
 
+<img src="./Env2.png" width="200">
+<img src="./LossConvergence.png" width="200">
 
-![plot](./Env2.png =200x120)
-![plot](./LossConvergence.png =200x120)
