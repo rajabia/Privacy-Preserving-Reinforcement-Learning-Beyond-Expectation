@@ -53,7 +53,6 @@ class hitorstandcontinuous:
 		self.obs=[]
 		
 		
-		
 
 	def add_obsticles(self,position, penality):
 		if position[0]>self.num_states or position[0]>self.num_states:
@@ -419,7 +418,7 @@ class DQN(nn.Module):
 		else:
 			return x.type(torch.DoubleTensor)
 
-def state_number(st ):
+def state_number(st):
 	i=np.floor(st[0])
 	j=np.floor(st[1])
 	temp=int(i*env.num_states+j)
@@ -549,12 +548,12 @@ def optimize_model():
 
 def plot_average_var():
 	from matplotlib import pyplot as pl
-	X1=np.load('20Runs_DP_result1.00.npy', allow_pickle=True)
+	X1=np.load('20Runs_DP_result1.npy', allow_pickle=True)
 	X2=np.load('20Runs_No_DP_result.npy',  allow_pickle=True)
-	X3=np.load('20Runs_DP_result5.00.npy',  allow_pickle=True)
+	X3=np.load('20Runs_DP_result5.npy',  allow_pickle=True)
 	
-	t=np.arange(1,np.array(X1).shape[1]+1,1)
-
+	t=np.arange(1,np.array(X2).shape[1]+1,1)
+	print(X1,X2,X3)
 	
 	for j,x in enumerate(X3):
 		x=[-1 if i is None else i for i in x]
@@ -587,8 +586,8 @@ def plot_average_var():
 	X2=np.array(X2, dtype=float)
 	Y2, Y2_e= np.mean(X2,axis=0).astype(np.float64),  np.std(X2,axis=0).astype(np.float64)
 	pl.plot(t, Y2, 'k', color='gray', label='NoDP')
-	# pl.fill_between(t, Y2-Y2_e, Y2+Y2_e,alpha=0.5, edgecolor='#1B2ACC', facecolor='#089FFF')
-	pl.fill_between(t, Y2-Y2_e, Y2+Y2_e,alpha=0.5, edgecolor='dimgray', facecolor='dimgray')
+	pl.fill_between(t, Y2-Y2_e, Y2+Y2_e,alpha=0.5, edgecolor='#1B2ACC', facecolor='#089FFF')
+# 	pl.fill_between(t, Y2-Y2_e, Y2+Y2_e,alpha=0.5, edgecolor='dimgray', facecolor='dimgray')
 
 	pl.xlabel('Episode')
 	pl.ylabel('Loss')
@@ -596,16 +595,77 @@ def plot_average_var():
 	pl.savefig('Var_Together.png',bbox_inches='tight')
 
 
+if __name__ == '__main__':
 
-def run():
+# 	plot_average_var()
+# 	quit()
+	
+
+	Transition = namedtuple('Transition',('state', 'action', 'next_state', 'reward'))
+	BATCH_SIZE = 256
+	GAMMA = 0.7
+	#ES_** :Selecting the Action Parameters 
+	#(weight decay for selecting optimized action ro randomly choosing an action)
+	EPS_START = 0.9
+	EPS_END = 0.05
+	EPS_DECAY = 200
+	TARGET_UPDATE = 1
+	num_episodes = 800
+
+    
+	import argparse
+
+	parser = argparse.ArgumentParser(description='Inputs for Privacy-Preserving Reinforcement Learning Beyond Expectation simulation')
+	
+	parser.add_argument('--DP', type=int,  default=0, help='0 for OFF 1 for On')#dest='Differential Privacy ON/OFF'
+	parser.add_argument('--CPT', type=int,   default=0, help='0 for OFF 1 for On')#dest='CPT ON/OFF',
+	parser.add_argument('--sigma', type=int,   default=5, help='any float number')#dest='Sigma value for DF',
+	args = parser.parse_args()
+	print(args)
+    #DIFFERENTIAL PRIVACY MAIN PARAMETE : larger sigma ==> higher privacy level
+	SIGMA= args.sigma
+	#Trurn on/ Off DIFFERENTIAL PRIVACY  
+	Diff_Priv= False if args.DP==0 else True
+
+	#Trurn on/ Off Penalty for hitting obsticles
+	CPT_mod=False if args.CPT==0 else True
+    
+	env = hitorstandcontinuous()
+	m = env.action_space.n
+	# [[9,8], [3,5], [4,8], [5,5]]
+	if CPT_mod:
+		env.add_obsticles([9,8], 50)
+		env.add_obsticles([3,5], 5)
+		env.add_obsticles([4,8], 25)
+		env.add_obsticles([5,5], 10)
+	else:
+		env.add_obsticles([9,8], 1)
+		env.add_obsticles([3,5], 1)
+		env.add_obsticles([4,8], 1)
+		env.add_obsticles([5,5], 1)
+
+	seed = 3
+	np.random.seed(seed)
+	torch.manual_seed(seed)
+
+	device = "cpu"
+
+	steps_done = 0
+
+	sigma_cpt = 0.88
+	
+	eta_1 = 0.61
+	eta_2 = 0.69
+	gamma_cpt = 0.9
+	N_max=100
+	
 	
 	all_episodic_rewards=[]
 	cost, cost_ac=[],[]
 
-	average_collision_per_obsticles=[]
-	average_collision_per_obsticles_ac=[]
 
-	while len(all_episodic_rewards) <5:
+
+	while len(all_episodic_rewards) <20:
 		policy_net = DQN(m,[env.num_states,env.num_states],DP=Diff_Priv,sigma=SIGMA).to(device)
 		optimizer = optim.RMSprop(policy_net.parameters())
 		memory = ReplayMemory(10000)
@@ -635,8 +695,9 @@ def run():
 			# Update the target network, copying all weights and biases in DQN
 			l=optimize_model()
 			episodic_rewards.append(l)
+		loss_conv=np.mean(episodic_rewards[-5:])
 		all_episodic_rewards.append(episodic_rewards)
-		
+		print("Loss vlue of the last five iterations : %.4f"%(loss_conv))
 
 
 		a,b,a1,b1=0,0,0,0
@@ -659,121 +720,32 @@ def run():
 		ave_per_obst_ac=np.mean(np.array(list_coll_ac),axis=0)
 		ave_per_obst=np.mean(np.array(list_coll),axis=0)
 		
-		print("General Simulation average Cost : %.4f and collision %.4f for 10 runs"%(a1/10.0,b1/10.0))
-		print("Actor critic Simulation average Cost : %.4f and collision %.4f for 10 runs"%(a/10.0,b/10.0))
-		print("General Simulation: Average of hitting each obstacles: ",ave_per_obst)
-		print("Actor -Critic Simulation: Average of hitting each obstacles: ",ave_per_obst_ac)
+		print("General simulation average Cost : %.4f and collision %.4f for 10 runs"%(a1/10.0,b1/10.0))
+		print("Actor critic simulation average cost : %.4f and collision %.4f for 10 runs"%(a/10.0,b/10.0))
+		print("General simulation: average # of hitting each obstacle: ",ave_per_obst)
+		print("Actor-Critic Simulation: average # of hitting each obstacle: ",ave_per_obst_ac)
 		
-		average_collision_per_obsticles.append(ave_per_obst)
-		average_collision_per_obsticles_ac.append(ave_per_obst_ac)
+
 
 	
 	if Diff_Priv:
-		savefileadd= 'DP_result%.2f'%SIGMA
+		savefileadd= 'DP_result'+ str(SIGMA)
 	else:
 		savefileadd= 'No_DP_result'
+	if CPT_mod:
+		savefileadd= 'CPT_'+savefileadd
 
-	
-	np.save('20Runs_'+savefileadd+'.npy', all_episodic_rewards)
+
+	if CPT_mod:
+		np.save('20Runs_'+savefileadd+'.npy', all_episodic_rewards)
 	print('*'*15 +"  Average for 20 runs   "+'*'*15 )
 	print('General Simulation')
 	print("Average Cost : %.4f "%(np.mean(cost)))
-	print("Average obstacles hit for 20 runs is for each obstacles is  ", (np.mean(np.array(average_collision_per_obsticles),axis=0)))
+	print("Average obstacles' hits for 20 runs is for each obstacle is  ", (np.mean(np.array(average_collision_per_obsticles),axis=0)))
 
 	print('Actor_Critic Simulation')
 	print("Average Cost:  %.4f"%(np.mean(cost_ac)))
 	print("Average obstacles hit for 20 runs is for each obstacles is  ", (np.mean(np.array(average_collision_per_obsticles_ac),axis=0)))
-
-	print('saving the results in: '+ '20Runs_'+savefileadd+'.npy')
-
-
-if __name__ == '__main__':
-
-	
-	
-	import argparse
-
-	parser = argparse.ArgumentParser(description='Inputs for Privacy-Preserving Reinforcement Learning Beyond Expectation simulation')
-	
-	parser.add_argument('--DF', type=int,  default=0, help='0 for OFF 1 for On')#dest='Differential Privacy ON/OFF'
-	parser.add_argument('--CPT', type=int,   default=0, help='0 for OFF 1 for On')#dest='CPT ON/OFF',
-	parser.add_argument('--sigma', type=float,   default=5.0, help='any float number')#dest='Sigma value for DF',
-	args = parser.parse_args()
-	print(args)
-
-
-	Transition = namedtuple('Transition',('state', 'action', 'next_state', 'reward'))
-	BATCH_SIZE = 128
-	GAMMA = 0.7
-	#ES_** :Selecting the Action Parameters 
-	#(weight decay for selecting optimized action ro randomly choosing an action)
-	EPS_START = 0.9
-	EPS_END = 0.05
-	EPS_DECAY = 200
-	TARGET_UPDATE = 1
-	num_episodes = 400
-
-	#DIFFERENTIAL PRIVACY MAIN PARAMETE : larger sigma ==> higher privacy level
-
-	SIGMA= args.sigma
-
-	#Trurn on/ Off DIFFERENTIAL PRIVACY  
-	Diff_Priv= False if args.DF==0 else True
-
-	#Trurn on/ Off Penalty for hitting obsticles
-	CPT_mod=False if args.CPT==0 else True
-	
-	env = hitorstandcontinuous()
-	m = env.action_space.n
-	
-	# Adding obsticles, we considered 4 obsticles with different costs of hitting
-	#For example [9,8] with cost of 50
-	if CPT_mod:
-		env.add_obsticles([9,8], 50)
-		env.add_obsticles([3,5], 5)
-		env.add_obsticles([4,8], 25)
-		env.add_obsticles([5,5], 10)
-	else:
-		env.add_obsticles([9,8], 1)
-		env.add_obsticles([3,5], 1)
-		env.add_obsticles([4,8], 1)
-		env.add_obsticles([5,5], 1)
-
-	seed = 3
-	np.random.seed(seed)
-	torch.manual_seed(seed)
-
-	device = "cpu"
-	policy_net = DQN(m,[env.num_states,env.num_states],DP=Diff_Priv,sigma=SIGMA).to(device)
-	
-
-	optimizer = optim.RMSprop(policy_net.parameters())
-	memory = ReplayMemory(10000)
-
-
-	steps_done = 0
-
-	sigma_cpt = 0.88
-	
-	eta_1 = 0.61
-	eta_2 = 0.69
-	gamma_cpt = 0.9
-	N_max=100
-
-	run()
-
-	args.DF= 0
-	CPT_mod=1
-	run()
-	for sigma in [1 , 5]:
-		SIGMA=sigma
-		Diff_Priv=1
-		run()
-	plot_average_var()
-
-
-
-	
 
 
 	
