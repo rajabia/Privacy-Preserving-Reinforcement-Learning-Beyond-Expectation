@@ -33,9 +33,20 @@ To cite this paper:
   year={2022}
 }
 ```
-The 10 × 10 square region on which the PP-CPT- RL algorithm is evaluated. The agent needs to learn a policy to reach target T from start S. There are obstacles in the environment (red squares), and the agent incurs a different cost when encountering each obstacle.
+
+<table>
+  <tr>
+    <td><img src="./Env2.png" width="200"></td>
+  </tr>
+  <tr>
+    The 10 × 10 square region on which the PP-CPT- RL algorithm is evaluated. The agent needs to learn a policy to reach target T from start S. There are obstacles in the environment (red squares), and the agent incurs a different cost when encountering each obstacle.
+     <td>Present day in purple and selected day in pink</td>
+  </tr>
+ </table>
+
+
 <p float="left">
- <img src="./Env2.png" width="200">
+ 
   The 10 × 10 square region on which the PP-CPT- RL algorithm is evaluated. The agent needs to learn a policy to reach target T from start S. There are obstacles in the environment (red squares), and the agent incurs a different cost when encountering each obstacle.
  <img src="./LossConvergence.png" width="200">
 </p>
