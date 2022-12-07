@@ -1,7 +1,7 @@
 # Privacy-Preserving-Reinforcement-Learning-Beyond-Expectation
-Privacy-Preserving Reinforcement Learning Beyond Expectation:
 
-This code extends the [Privacy-preserving Q-Learning with Functional Noise in Continuous Spaces](https://github.com/wangbx66/differentially-private-q-learning) to add cumulative prospect theory (CPT) in discrete space enviroment.
+
+This code extends the [Privacy-preserving Q-Learning with Functional Noise in Continuous Spaces](https://github.com/wangbx66/differentially-private-q-learning) to support cumulative prospect theory (CPT) in discrete space enviroment.
 
 In [Privacy-Preserving Reinforcement Learning Beyond Expectation](https://arxiv.org/pdf/2203.10165), we incorporated cumulative prospect theory (CPT) into the objective of a reinforcement learning (RL) problem to quantify risk and used differential privacy to keep decision making hidden from external parties.
 
@@ -14,8 +14,8 @@ In [Privacy-Preserving Reinforcement Learning Beyond Expectation](https://arxiv.
  
  <table>
   <tr>
-    <td><img src="./LossConvergence.png" width="700"></td>
-    <td>Loss values averaged over 20 runs. Shaded regions indicate variance of the loss. When $\sigma = 1$ (red curve, denoted DP − 1), the average loss and its variance is comparable to the setting without differential privacy (blue curve, denoted NoDP). Choosing $\sigma = 5$  (green curve, denoted DP − 5) provides improved guarantees on privacy according to Theorem 1, but results in a higher loss, thus demonstrating a privacy-utility tradeoff.
+    <td><img src="./LossConvergence.png" width="680"></td>
+    <td>Loss values averaged over 20 runs. Shaded regions indicate variance of the loss. When $\sigma = 1$ (red curve, denoted DP − 1), the average loss and its variance is comparable to the setting without differential privacy (blue curve, denoted NoDP). Choosing $\sigma = 5$  (green curve, denoted DP − 5) provides improved guarantees on privacy, but results in a higher loss, thus demonstrating a privacy-utility tradeoff.
  </td>
   </tr>
  </table>
