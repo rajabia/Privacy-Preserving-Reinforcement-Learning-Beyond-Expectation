@@ -12,7 +12,7 @@ In this paper, we incorporated cumulative prospect theory (CPT) into the objecti
  
  <table>
   <tr>
-    <td><img src="./LossConvergence.png" width="600"></td>
+    <td><img src="./LossConvergence.png" width="700"></td>
     <td>T Loss values averaged over 20 runs. Shaded regions indicate variance of the loss. When $\sigma = 1$ (red curve, denoted DP − 1), the average loss and its variance is comparable to the setting without differential privacy (blue curve, denoted NoDP). Choosing $\sigma = 5$  (green curve, denoted DP − 5) provides improved guarantees on privacy according to Theorem 1, but results in a higher loss, thus demonstrating a privacy-utility tradeoff.
  </td>
   </tr>
